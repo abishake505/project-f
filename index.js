@@ -1,51 +1,37 @@
-require('dotenv').config(); // load env variables
-
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const productRoute = require('./routes/product.route.js');
+
+const authRoutes = require('./auth/routes/auth.route');
+const adminProductRoute = require('./admin/admin.route/admin.product.route');
+const productRoute = require('./customer/routes/product.route');
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3001', 'https://project-f-beige.vercel.app'];
-
+// ✅ CORS
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // allow non-browser requests
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `CORS policy: Origin ${origin} is not allowed`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
+  origin: ['http://localhost:3000', 'https://project-f-beige.vercel.app'],
   credentials: true,
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/products", productRoute);
+// ✅ Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminProductRoute);
+app.use('/api/products', productRoute);
 
-app.get('/', (req, res) => {
-  res.send("Hello from API server!");
+app.get("/", (req, res) => {
+  res.send("API running...");
 });
 
+// ✅ Mongo Connect
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ Connected to MongoDB");
+    console.log("MongoDB connected ✅");
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
+    app.listen(PORT, () => console.log(`Server started at port ${PORT} 🚀`));
   })
-  .catch(err => {
-    console.error("❌ MongoDB connection failed:", err.message);
-  });
-
-// Global error handler for CORS errors (optional)
-app.use((err, req, res, next) => {
-  if (err.message.includes('CORS')) {
-    return res.status(403).json({ message: err.message });
-  }
-  next(err);
-});
+  .catch(err => console.error("❌ Mongo error:", err.message));
