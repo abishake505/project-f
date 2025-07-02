@@ -3,31 +3,33 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// 🛠️ Route Imports
 const authRoutes = require('./auth/routes/auth.route');
 const adminProductRoute = require('./admin/admin.route/admin.product.route');
 const productRoute = require('./customer/routes/product.route');
 
 const app = express();
 
-// ✅ CORS
+// ✅ CORS Setup (✔️ Safe and Non-breaking)
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://project-f-beige.vercel.app'],
+  origin: ['http://localhost:3000', 'https://project-f-beige.vercel.app'], // ✅ Frontend URLs
   credentials: true,
 }));
 
+// ✅ Body Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// ✅ Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminProductRoute);
-app.use('/api/products', productRoute);
+// ✅ Routes (🛑 Don't touch working logic)
+app.use('/api/auth', authRoutes);                      // login & register ✅
+app.use('/api/admin', adminProductRoute);              // admin CRUD ✅
+app.use('/api/products', productRoute);                // customer products ✅
 
 app.get("/", (req, res) => {
   res.send("API running...");
 });
 
-// ✅ Mongo Connect
+// ✅ MongoDB Connect
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected ✅");
