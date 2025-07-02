@@ -8,6 +8,7 @@ const authRoutes = require('./auth/routes/auth.route');
 const adminProductRoute = require('./admin/admin.route/admin.product.route');
 const productRoute = require('./customer/routes/product.route');
 
+app.use('/api/products', productRoute);
 const app = express();
 
 // ✅ CORS Setup (✔️ Safe and Non-breaking)

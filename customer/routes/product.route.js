@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { getAllProducts } = require('../controllers/product.controller');
 const Product = require('../models/productModel');
 const authMiddleware = require('../../auth/middleware/auth');
 
@@ -24,5 +24,9 @@ router.delete("/products/:id", authMiddleware("admin"), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+router.get('/', getAllProducts);
+
 
 module.exports = router;
