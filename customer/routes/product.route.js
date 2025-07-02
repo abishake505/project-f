@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { getAllProducts } = require('../controllers/product.controller');
+const { getproducts } = require('../controllers/product.controller');
 const Product = require('../models/productModel');
 const authMiddleware = require('../../auth/middleware/auth');
+
+// GET - All products
+router.get('/', getproducts);
 
 // POST - Create product
 router.post("/products", authMiddleware("admin"), async (req, res) => {
@@ -24,9 +27,5 @@ router.delete("/products/:id", authMiddleware("admin"), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-router.get('/', getAllProducts);
-
 
 module.exports = router;
